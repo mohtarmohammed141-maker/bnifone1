@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BniFone - بني فون</title>
+    <style>
+        :root { --blue: #1A237E; --gold: #D4AF37; --yellow: #FFEB3B; --whatsapp: #25D366; --pink: #E91E63; --red: #d32f2f; --bg: #f9f9f9; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        
+        body { 
+            margin: 0; 
+            background: var(--yellow); 
+            background-image: radial-gradient(circle at 20% 20%, #fff9c4 0%, transparent 40%),
+                              radial-gradient(circle at 80% 80%, #fff9c4 0%, transparent 40%);
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; padding: 10px;
+        }
+
+        .app-container { 
+            width: 100%; max-width: 450px; background: rgba(255, 255, 255, 0.98); 
+            border-radius: 35px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+            text-align: center; position: relative; border: 2px solid white;
+        }
+
+        .angel-tag { 
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 5px 20px; border-radius: 20px;
+            font-size: 12px; color: var(--blue); font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #eee;
+        }
+
+        .logo-area {
+            width: 90px; height: 90px; background: white; border-radius: 50%;
+            margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 3px solid var(--blue);
+            overflow: hidden;
+        }
+        .logo-area img { width: 90%; height: 90%; object-fit: contain; }
+
+        .brand-box h2 { margin: 0; color: var(--blue); font-size: 20px; margin-bottom: 12px; }
+
+        .page { display: none; }
+        .active-page { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; text-align: center; font-size: 14px; background: #fafafa; }
+        
+        .btn { width: 100%; padding: 13px; border-radius: 18px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 8px; transition: 0.2s; }
+        .btn-blue { background: var(--blue); color: white; }
+        .btn-pink { background: var(--pink); color: white; }
+        .btn-green { background: #2e7d32; color: white; }
+        .btn-red { background: var(--red); color: white; }
+        .btn-white { background: white; color: var(--blue); border: 1px solid #eee; }
+        
+        .gift-section { background: var(--blue); color: white; padding: 12px; border-radius: 20px; margin: 10px 0; }
+        .progress-bar { background: rgba(255,255,255,0.2); height: 8px; border-radius: 5px; margin-top: 6px; overflow: hidden; }
+        #progress-fill { background: var(--gold); height: 100%; width: 0%; transition: 0.8s; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; max-height: 380px; overflow-y: auto; padding-left: 5px; }
+        .s-card { 
+            background: white; padding: 12px 8px; border-radius: 18px; border: 1px solid #eee; 
+            cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .s-card:hover { border-color: var(--blue); transform: translateY(-3px); }
+        .s-card span { font-size: 22px; display: block; margin-bottom: 4px; }
+        .s-card p { margin: 0; font-size: 12px; font-weight: bold; color: #444; }
+
+        .market-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+        .market-tab { flex: 1; padding: 8px; border-radius: 12px; cursor: pointer; font-weight: bold; background: #eee; color: #333; font-size: 13px; }
+        .market-tab.active-tab-boys { background: var(--blue); color: white; }
+        .market-tab.active-tab-girls { background: var(--pink); color: white; }
+
+        .product-card { 
+            background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; 
+            border: 1px solid #eee; text-align: right; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .product-card h4 { margin: 0 0 5px 0; color: #333; font-size: 14px; }
+        .product-card .price { color: green; font-weight: bold; font-size: 13px; }
+        .product-card .seller { font-size: 11px; color: #777; margin-top: 3px; }
+
+        .suggestion-box { background: #f0f4f8; padding: 12px; border-radius: 20px; margin-top: 12px; border: 1px dashed var(--blue); }
+        .footer-rights { font-size: 11px; color: #777; margin-top: 15px; font-weight: bold; }
+        
+        .user-card-admin { background: #f8f9fa; border: 1px solid #ddd; padding: 10px; border-radius: 12px; margin-bottom: 8px; text-align: right; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="angel-tag">بني فون ❤️ ملاك</div>
+
+    <!-- صفحة الدخول -->
+    <div id="login-page" class="page active-page">
+        <div class="logo-area">
+            <img src="https://img.freepik.com/premium-vector/mobile-phone-logo-design-template-smartphone-application-icon-vector-illustration_664675-538.jpg" alt="BniFone Logo">
+        </div>
+        <div class="brand-box"><h2>بني فون للخدمات المتكاملة</h2></div>
+        
+        <!-- نموذج تسجيل الدخول المباشر -->
+        <div id="login-form">
+            <input type="text" id="phone" placeholder="رقم الهاتف">
+            <input type="password" id="pass" placeholder="كلمة المرور">
+            <button class="btn btn-blue" onclick="handleLogin()">تسجيل الدخول</button>
+            <span style="font-size:12px; color:#666; cursor:pointer; text-decoration:underline; display:block; margin-top:10px;" onclick="forgotPassword()">نسيت كلمة السر؟</span>
+            <button class="btn btn-white" onclick="toggleView(false)" style="margin-top:15px;">إنشاء حساب جديد</button>
+        </div>
+
+        <!-- نموذج إنشاء حساب جديد + رمز التحقق OTP -->
+        <div id="register-form" style="display:none;">
+            <input type="text" id="reg-name" placeholder="الاسم الثلاثي">
+            <input type="text" id="reg-phone" placeholder="رقم الهاتف">
+            <input type="password" id="reg-pass" placeholder="كلمة مرور جديدة">
+            <button class="btn btn-blue" onclick="sendRegisterOTP()">إرسال رمز التحقق (OTP)</button>
+            <button class="btn btn-white" onclick="toggleView(true)">رجوع</button>
+        </div>
+
+        <div id="otp-confirm-form" style="display:none;">
+            <p style="font-size:11px; color:green;">تم إرسال رمز التحقق إلى رقم هاتفك</p>
+            <input type="number" id="otp-input" placeholder="أدخل رمز التحقق (مثال: 1234)">
+            <button class="btn btn-green" onclick="confirmRegister()">تأكيد وإنشاء الحساب</button>
+        </div>
+
+        <br>
+        <small style="cursor:pointer; color:var(--blue); opacity: 0.5;" onclick="openAdmin()">لوحة الإدارة الكاملة</small>
+        <div class="footer-rights">تم التطوير بواسطة بني فون 2026</div>
+    </div>
+
+    <!-- الصفحة الرئيسية -->
+    <div id="main-app" class="page">
+        <div class="brand-box" style="margin-bottom:5px;"><h2>خدمات بني فون</h2></div>
+        <p id="user-info" style="color:var(--blue); font-weight:bold; margin:0; font-size:12px;"></p>
+
+        <div class="gift-section">
+            <div style="display:flex; justify-content:space-between; font-size:11px;">
+                <span>🎁 عداد هدايا ملاك (3+1)</span>
+                <span id="gift-count">0 / 3</span>
+            </div>
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+        </div>
+        
+        <div class="grid">
+            <div class="s-card" onclick="openGameTopup()"><span>🎯</span><p>شحن ألعاب الحرب</p></div>
+            <div class="s-card" onclick="openAccountsMarket()"><span>🎮</span><p>سوق الحسابات</p></div>
+            <div class="s-card" onclick="openOnlinePhoneServices()"><span>🌐</span><p>خدمات هواتف</p></div>
+            <div class="s-card" onclick="openMikrotikServices()"><span>📡</span><p>برمجة ميكروتيك</p></div>
+            <div class="s-card" onclick="openEnglishLearning()"><span>🇬🇧</span><p>تعلم الإنجليزية</p></div>
+            <div class="s-card" onclick="openMarketPage()"><span>🛍️</span><p>سوق المنتجات</p></div>
+            <div class="s-card" onclick="requestApkApp()"><span>📲</span><p>تطبيقات APK</p></div>
+            <div class="s-card" onclick="processService('شراء كروت شبكة')"><span>🎫</span><p>كروت شبكة</p></div>
+            <div class="s-card" onclick="processService('تحويل رصيد')"><span>💸</span><p>تحويل رصيد</p></div>
+            <div class="s-card" onclick="processService('خدمة بنكك')"><span>🏦</span><p>خدمة بنكك</p></div>
+            <div class="s-card" onclick="processService('خدمة كاش')"><span>💰</span><p>خدمات كاش</p></div>
+            <div class="s-card" onclick="processService('دفع فواتير ستارلينك')"><span>🛰️</span><p>ستارلينك</p></div>
+            <div class="s-card" onclick="openNetworkSettings()"><span>📶</span><p>ضبط الإنترنت</p></div>
+            <div class="s-card" onclick="processService('تصميم لوغو احترافي')"><span>🎨</span><p>تصميم لوغو</p></div>
+        </div>
+
+        <div class="suggestion-box">
+            <textarea id="suggestion-text" placeholder="📦 صندوق الاقتراحات والبلاغات: اكتب مقترحك أو بلاغك هنا..." style="height:50px;"></textarea>
+            <button class="btn btn-blue" style="padding: 8px; font-size: 12px; margin-top: 0;" onclick="sendSuggestion()">إرسال للإدارة</button>
+        </div>
+
+        <button class="btn btn-white" onclick="logout()" style="margin-top:10px; color:red; border-color:red; padding:10px;">تسجيل الخروج</button>
+        <div class="footer-rights">تم التطوير بواسطة بني فون 2026</div>
+    </div>
+
+    <!-- صفحة سوق الحسابات والألعاب -->
+    <div id="accounts-page" class="page">
+        <div class="brand-box"><h2>🎮 سوق الحسابات والألعاب</h2></div>
+        <p style="font-size:11px; color:#555; margin-bottom:10px;">فري فاير • تيك توك • فيسبوك • ببجي</p>
+
+        <div id="accounts-list" style="max-height: 270px; overflow-y: auto;"></div>
+
+        <button class="btn btn-green" onclick="showAddAccountModal()" style="margin-top:10px; font-size: 13px;">+ اعرض حسابك للبيع</button>
+        <button class="btn btn-white" onclick="showPage('main-app')" style="margin-top:5px; padding:10px;">العودة للرئيسية</button>
+        <div class="footer-rights">تم التطوير بواسطة بني فون 2026</div>
+    </div>
+
+    <!-- صفحة سوق المنتجات -->
+    <div id="market-page" class="page">
+        <div class="brand-box"><h2>سوق بني فون الإلكتروني</h2></div>
+        
+        <div class="market-tabs">
+            <div id="tab-boys" class="market-tab active-tab-boys" onclick="switchMarketCategory('boys')">📱 سوق الأولاد</div>
+            <div id="tab-girls" class="market-tab" onclick="switchMarketCategory('girls')">💅 سوق البنات</div>
+        </div>
+
+        <div id="market-list" style="max-height: 260px; overflow-y: auto;"></div>
+
+        <button class="btn btn-blue" onclick="showAddProductModal()" style="margin-top:10px; font-size: 13px;">+ إضافة منتج للبيع</button>
+        <button class="btn btn-white" onclick="showPage('main-app')" style="margin-top:5px; padding:10px;">العودة للرئيسية</button>
+        <div class="footer-rights">تم التطوير بواسطة بني فون 2026</div>
+    </div>
+
+    <!-- لوحة الإدارة والتحكم الكاملة -->
+    <div id="admin-page" class="page">
+        <div class="brand-box"><h2>⚙ لوحة الكنترول والتحكم</h2></div>
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <button class="btn btn-blue" style="font-size:11px; padding:6px;" onclick="switchAdminTab('users')">المشتركين والحظر</button>
+            <button class="btn btn-blue" style="font-size:11px; padding:6px;" onclick="switchAdminTab('reports')">البلاغات والاقتراحات</button>
+        </div>
+        <div id="admin-users-list" style="max-height: 300px; overflow-y: auto;"></div>
+        <div id="admin-reports-list" style="max-height: 300px; overflow-y: auto; display:none;"></div>
+        <button class="btn btn-white" onclick="showPage('main-app')" style="margin-top:10px;">العودة للرئيسية</button>
+        <div class="footer-rights">تم التطوير بواسطة بني فون 2026</div>
+    </div>
+</div>
+
+<script>
+    const myWhatsapp = "249113600735";
+    const appCommissionRate = 0.05;
+
+    const defaultProducts = [
+        { id: 1, title: "سماعات إيربودز وردية كيوت", price: 18000, category: "girls", seller: "سارة", phone: "249123456789" },
+        { id: 2, title: "سامسونج A12 مستعمل نظيف", price: 85000, category: "boys", seller: "أحمد", phone: "249111222333" }
+    ];
+
+    const defaultAccounts = [
+        { id: 101, title: "حساب فري فاير فايرباس قديم + سكنات نادر", price: 35000, type: "Free Fire", seller: "علي", phone: "249900000001" },
+        { id: 102, title: "صفحة تيك توك 50 ألف متابع", price: 75000, type: "TikTok", seller: "مازن", phone: "249900000002" }
+    ];
+
+    let db = JSON.parse(localStorage.getItem('bnifone_v3_db')) || { users: {}, products: [], accounts: [], reports: [] };
+    if (!db.products || db.products.length === 0) db.products = defaultProducts;
+    if (!db.accounts || db.accounts.length === 0) db.accounts = defaultAccounts;
+    if (!db.reports) db.reports = [];
+    localStorage.setItem('bnifone_v3_db', JSON.stringify(db));
+
+    let currentUser = null;
+    let currentCategory = "boys";
+    let tempRegisterData = null;
+
+    function saveDB() { localStorage.setItem('bnifone_v3_db', JSON.stringify(db)); }
+
+    /* 1. شحن ألعاب الحرب */
+    function openGameTopup() {
+        const game = prompt("اختر اللعبة المراد شحنها:\n1- فري فاير (Free Fire)\n2- ببجي (PUBG Mobile)\n3- كول أوف ديوتي (Call of Duty)\n4- ألعاب أخرى");
+        if (!game) return;
+        const idPlayer = prompt("اكتب الآيدي (ID) الخاص بك داخل اللعبة:");
+        if (!idPlayer) return;
+        const amount = prompt("اكتب عدد الجواهر/الشدات المطلوبة:");
+        if (!amount) return;
+
+        const name = currentUser ? currentUser.name : "مشترك";
+        const msg = `مرحباً بنيامين، أنا المشترك: ${name}\nأريد شحن لعبة: (${game})\nID اللاعب: ${idPlayer}\nالكمية: ${amount}`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    /* 2. خدمات الهواتف أونلاين */
+    function openOnlinePhoneServices() {
+        const service = prompt("اختر الخدمة المطلوبة:\n1- فك شفرة شبكة\n2- تجاوز حساب جوجل (FRP)\n3- تعريب وتحديث سوفتوير\n4- إصلاح مشاكل الأجهزة أونلاين");
+        if (!service) return;
+        const model = prompt("اكتب نوع الهاتف وموديله (مثال: Samsung A52):");
+        if (!model) return;
+
+        const name = currentUser ? currentUser.name : "زبون";
+        const msg = `مرحباً بنيامين، أريد خدمة سوفتوير أونلاين:\nالخدمة: ${service}\nموديل الجهاز: ${model}\nاسم المشترك: ${name}`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    /* 3. برمجة ميكروتيك الشبكة */
+    function openMikrotikServices() {
+        const option = prompt("خدمات ميكروتيك المتاحة:\n1- ضبط سيرفر Hotspot وتحديد السرعات\n2- حل مشاكل الشبكة واليوزر مانجر\n3- ضبط راوتر Ruijie / Mikrotik\n4- تصميم صفحة تسجيل دخول شبكة باسمك");
+        if (!option) return;
+
+        const name = currentUser ? currentUser.name : "صاحب شبكة";
+        const msg = `مرحباً بنيامين، أريد استشارة/خدمة برمجة ميكروتيك:\nنوع الطلب: ${option}\nالاسم: ${name}`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    /* 4. تعلم اللغة الإنجليزية */
+    function openEnglishLearning() {
+        alert("🎓 قسم تعليم اللغة الإنجليزية:\n\nنوفر كورسات ومواد تعليمية، قواعد، وممارسة المحادثات اليومية.\n\nاضغط موافق للتواصل مع قسم التعليم وحجز مستواك.");
+        const name = currentUser ? currentUser.name : "طالب";
+        const msg = `مرحباً بنيامين، أريد الانضمام/الاستفسار عن دروس تعليم اللغة الإنجليزية.\nالاسم: ${name}`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    /* 5. سوق الحسابات */
+    function openAccountsMarket() { showPage('accounts-page'); renderAccounts(); }
+
+    function renderAccounts() {
+        const container = document.getElementById('accounts-list');
+        if (!container) return;
+        container.innerHTML = "";
+        if (db.accounts.length === 0) {
+            container.innerHTML = "<p style='color:#777; margin-top:20px;'>لا توجد حسابات معروضة حالياً</p>";
+            return;
+        }
+
+        db.accounts.forEach(acc => {
+            const commission = Math.round(acc.price * appCommissionRate);
+            container.innerHTML += `
+                <div class="product-card" style="border-right: 4px solid var(--blue);">
+                    <span style="background:var(--blue); color:white; padding:2px 8px; border-radius:8px; font-size:10px;">${acc.type}</span>
+                    <h4 style="margin-top:5px;">${acc.title}</h4>
+                    <div class="price">السعر: ${acc.price.toLocaleString()} ج.س</div>
+                    <div class="seller">البائع: ${acc.seller}</div>
+                    <button class="btn btn-green" style="padding:6px; font-size:11px; margin-top:6px;" onclick="buyAccount('${acc.title}', ${acc.price}, '${acc.type}', '${acc.seller}')">
+                        شراء الحساب عبر الضامن (عمولة: ${commission} ج.س)
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function showAddAccountModal() {
+        const type = prompt("اختر نوع الحساب (فري فاير / تيك توك / فيسبوك / ببجي):");
+        if (!type) return;
+        const title = prompt("تفاصيل الحساب (المستوى، السكنات، المتابعين):");
+        if (!title) return;
+        const price = parseFloat(prompt("السعر بالجنيه السوداني:"));
+        if (!price || isNaN(price)) return alert("يرجى كتابة سعر صحيح");
+
+        db.accounts.push({ id: Date.now(), type, title, price, seller: currentUser ? currentUser.name : "بائع", phone: currentUser ? currentUser.phone : myWhatsapp });
+        saveDB();
+        alert("تم إضافة حسابك للبيع بنجاح!");
+        renderAccounts();
+    }
+
+    function buyAccount(title, price, type, sellerName) {
+        const commission = Math.round(price * appCommissionRate);
+        const totalPrice = price + commission;
+        alert(`🔒 نظام الضامن لشراء الحسابات عبر بني فون:\nتحول المبلغ لـ (بنكك)، ثم يتأكد الفني من الحساب ويسلمه لك أماناً.\nالمبلغ مع العمولة: ${totalPrice.toLocaleString()} ج.س`);
+        const buyerName = currentUser ? currentUser.name : "مشتري جديد";
+        const msg = `مرحباً بنيامين، أنا المشتري: ${buyerName}\nأريد شراء حساب (${type}): [${title}]\nمن البائع: ${sellerName}\nالإجمالي: ${totalPrice} ج.س`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    /* باقي وظائف التطبيق العامة */
+    function openMarketPage() { showPage('market-page'); renderMarket(); }
+
+    function requestApkApp() {
+        const appName = prompt("اكتب اسم التطبيق أو اللعبة التي تريد رابط تنزيلها:");
+        if (!appName) return;
+        const name = currentUser ? currentUser.name : "زبون";
+        const msg = `مرحباً بنيامين، أريد رابط تنزيل مباشر لتطبيق: (${appName})`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    function processService(serviceName) {
+        alert("تنبيه: يتم الدفع عبر خدمة (بنكك) باسم: بنيامين محمد سعيد، بعد التواصل عبر الواتساب لتأكيد العملية.");
+        const name = currentUser ? currentUser.name : "زائر";
+        const msg = `مرحباً بنيامين، أنا المشترك: ${name}\nأريد طلب خدمة: ${serviceName}`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    function openNetworkSettings() {
+        alert("📶 بيانات ضبط الشبكات في السودان:\n• سوداني: internet\n• زين: zain\n• إم تي إن: internet.mtn.sd");
+        if (window.AndroidInterface) window.AndroidInterface.openAPNSettings();
+        else window.location.href = "intent://com.android.settings/#Intent;scheme=android-app;end";
+    }
+
+    function renderMarket() {
+        const container = document.getElementById('market-list');
+        if(!container) return;
+        container.innerHTML = "";
+        const filteredProducts = db.products.filter(p => p.category === currentCategory);
+
+        if(filteredProducts.length === 0) {
+            container.innerHTML = "<p style='color:#777; margin-top:20px;'>لا توجد منتجات معروضة حالياً</p>";
+            return;
+        }
+
+        filteredProducts.forEach(p => {
+            const commission = Math.round(p.price * appCommissionRate);
+            container.innerHTML += `
+                <div class="product-card">
+                    <h4>${p.title}</h4>
+                    <div class="price">السعر: ${p.price.toLocaleString()} ج.س</div>
+                    <div class="seller">البائع: ${p.seller}</div>
+                    <button class="btn ${p.category === 'girls' ? 'btn-pink' : 'btn-blue'}" style="padding:6px; font-size:11px; margin-top:6px;" onclick="buyProduct('${p.title}', ${p.price}, '${p.phone}', '${p.seller}')">
+                        شراء عبر الضامن (عمولة: ${commission} ج.س)
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function switchMarketCategory(category) {
+        currentCategory = category;
+        document.getElementById('tab-boys').className = category === 'boys' ? 'market-tab active-tab-boys' : 'market-tab';
+        document.getElementById('tab-girls').className = category === 'girls' ? 'market-tab active-tab-girls' : 'market-tab';
+        renderMarket();
+    }
+
+    function buyProduct(title, price, sellerPhone, sellerName) {
+        const commission = Math.round(price * appCommissionRate);
+        const totalPrice = price + commission;
+        alert(`الإجمالي المطلوب تحويله لـ (بنكك): ${totalPrice.toLocaleString()} ج.س`);
+        const buyerName = currentUser ? currentUser.name : "مشتري جديد";
+        const msg = `مرحباً بنيامين، أنا المشتري: ${buyerName}\nأريد شراء: (${title}) من البائع: ${sellerName}\nإجمالي المبلغ: ${totalPrice} ج.س`;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    function showAddProductModal() {
+        const title = prompt("اسم المنتج:");
+        if (!title) return;
+        const price = parseFloat(prompt("السعر بالجنيه السوداني:"));
+        if (!price || isNaN(price)) return alert("يرجى كتابة سعر صحيح");
+        const category = confirm("هل المنتج مخصص للبنات؟") ? "girls" : "boys";
+
+        db.products.push({ id: Date.now(), title, price, category, seller: currentUser ? currentUser.name : "تاجر", phone: currentUser ? currentUser.phone : myWhatsapp });
+        saveDB();
+        alert("تم إضافة منتجك بنجاح!");
+        renderMarket();
+    }
+
+    /* تسجيل الدخول المباشر */
+    function handleLogin() {
+        const phone = document.getElementById('phone').value;
+        const pass = document.getElementById('pass').value;
+        
+        if (!db.users[phone]) return alert("المستخدم غير موجود!");
+        if (db.users[phone].isBanned) return alert("⛔ تم حظر هذا الحساب من قِبل الإدارة!");
+        if (db.users[phone].pass !== pass) return alert("كلمة المرور غير صحيحة!");
+
+        currentUser = db.users[phone];
+        document.getElementById('user-info').innerText = "مرحباً بك: " + currentUser.name;
+        updateGiftUI();
+        showPage('main-app');
+    }
+
+    /* تسجيل حساب جديد مع رمز تحقق OTP */
+    function sendRegisterOTP() {
+        const name = document.getElementById('reg-name').value;
+        const phone = document.getElementById('reg-phone').value;
+        const pass = document.getElementById('reg-pass').value;
+        if(!name || !phone || !pass) return alert("يرجى ملء جميع الحقول");
+        
+        tempRegisterData = { name, phone, pass, cards: 0, isBanned: false };
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('otp-confirm-form').style.display = 'block';
+    }
+
+    function confirmRegister() {
+        const otp = document.getElementById('otp-input').value;
+        if (otp === "1234" || otp !== "") {
+            db.users[tempRegisterData.phone] = tempRegisterData;
+            saveDB();
+            alert("تم تأكيد الرمز وإنشاء الحساب بنجاح!");
+            toggleView(true);
+        } else {
+            alert("رمز OTP غير صحيح");
+        }
+    }
+
+    function forgotPassword() {
+        const phone = document.getElementById('phone').value;
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent("نسيت كلمة سر حسابي: " + (phone || ""))}`, "_blank");
+    }
+
+    function updateGiftUI() {
+        if(!currentUser) return;
+        let count = (currentUser.cards || 0) % 4;
+        document.getElementById('progress-fill').style.width = (count / 3 * 100) + "%";
+        document.getElementById('gift-count').innerText = count + " / 3";
+    }
+
+    /* صندوق الاقتراحات والبلاغات */
+    function sendSuggestion() {
+        const text = document.getElementById('suggestion-text').value;
+        if(!text) return alert("اكتب مقترحك أو بلاغك أولاً");
+        const sender = currentUser ? currentUser.name + " (" + currentUser.phone + ")" : "زائر";
+        
+        const report = {
+            id: Date.now(),
+            user: sender,
+            text: text,
+            date: new Date().toLocaleDateString('ar-EG')
+        };
+        db.reports.push(report);
+        saveDB();
+
+        window.open(`https://wa.me/${myWhatsapp}?text=${encodeURIComponent("مقترح/بلاغ من " + sender + ": " + text)}`, "_blank");
+        alert("تم إرسال اقتراحك/بلاغك بنجاح وشكراً لمساهمتك!");
+        document.getElementById('suggestion-text').value = "";
+    }
+
+    /* لوحة التحكم والإدارة */
+    function openAdmin() {
+        if(prompt("كلمة سر المدير:") === "2026") {
+            renderAdminUsers();
+            renderAdminReports();
+            showPage('admin-page');
+        } else {
+            alert("كلمة المرور خاطئة!");
+        }
+    }
+
+    function renderAdminUsers() {
+        const cont = document.getElementById('admin-users-list');
+        cont.innerHTML = "<h4>قائمة المشتركين والتحكم:</h4>";
+        if(Object.keys(db.users).length === 0) {
+            cont.innerHTML += "<p>لا توجد حسابات مسجلة بعد</p>";
+            return;
+        }
+        Object.values(db.users).forEach(u => {
+            cont.innerHTML += `<div class="user-card-admin">
+                <b>${u.name}</b><br>
+                <span>الرقم: ${u.phone}</span> | <span>كروت: ${u.cards || 0}</span><br>
+                <span>الحالة: ${u.isBanned ? '<span style="color:red">محظور</span>' : '<span style="color:green">نشط</span>'}</span><br>
+                <button onclick="addCard('${u.phone}')" style="background:green; color:white; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; margin-top:4px; font-size:11px;">+ إضافة كرت</button>
+                <button class="btn ${u.isBanned ? 'btn-green' : 'btn-red'}" style="padding:4px 8px; font-size:11px; margin-top:4px;" onclick="toggleBlockUser('${u.phone}')">
+                    ${u.isBanned ? 'إلغاء الحظر' : 'حظر هذا الشخص 🚫'}
+                </button>
+            </div>`;
+        });
+    }
+
+    function renderAdminReports() {
+        const cont = document.getElementById('admin-reports-list');
+        cont.innerHTML = "<h4>صندوق البلاغات والاقتراحات الواردة:</h4>";
+        if (db.reports.length === 0) {
+            cont.innerHTML += "<p>لا توجد بلاغات أو اقتراحات حالياً</p>";
+            return;
+        }
+        db.reports.forEach(r => {
+            cont.innerHTML += `
+                <div class="user-card-admin" style="border-right: 4px solid var(--blue);">
+                    <b>من:</b> ${r.user}<br>
+                    <b>التاريخ:</b> ${r.date}<br>
+                    <b>النص:</b> ${r.text}
+                </div>
+            `;
+        });
+    }
+
+    function toggleBlockUser(phone) {
+        db.users[phone].isBanned = !db.users[phone].isBanned;
+        saveDB();
+        renderAdminUsers();
+    }
+
+    function switchAdminTab(tab) {
+        document.getElementById('admin-users-list').style.display = tab === 'users' ? 'block' : 'none';
+        document.getElementById('admin-reports-list').style.display = tab === 'reports' ? 'block' : 'none';
+    }
+
+    function addCard(phone) {
+        db.users[phone].cards = (db.users[phone].cards || 0) + 1;
+        saveDB();
+        renderAdminUsers();
+        if(currentUser && currentUser.phone === phone) {
+            currentUser = db.users[phone];
+            updateGiftUI();
+        }
+    }
+
+    function toggleView(isLogin) {
+        document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+        document.getElementById('register-form').style.display = isLogin ? 'none' : 'block';
+        document.getElementById('otp-confirm-form').style.display = 'none';
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+    }
+
+    function logout() { location.reload(); }
+</script>
+</body>
+</html>
